@@ -35,7 +35,7 @@ class Register extends React.Component {
     })
     .then(response => response.json()) // turn response into json
     .then(user => { // if the signin info matches the database, go to the homepage
-      if (user) {
+      if (user.id) {
         this.props.loadUser(user);
         this.props.onRouteChange('home');
       }
