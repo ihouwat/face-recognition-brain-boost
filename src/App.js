@@ -26,7 +26,7 @@ const particlesOptions = {
 const initialState = {
   input: '',
   imageURL: '',
-  box: {},
+  boxes: [],
   route: 'signin', // keeps track where we are on the page
   isSignedIn: false,
   user: {
@@ -57,20 +57,22 @@ class App extends Component {
   }
 
   calculateFaceLocation = (data) => {
-    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById('inputimage');
     const width = Number(image.width);
     const height = Number(image.height);
-    return {
-      leftCol: clarifaiFace.left_col * width,
-      topRow: clarifaiFace.top_row * height,
-      rightCol: width - (clarifaiFace.right_col * width),
-      bottomRow: height - (clarifaiFace.bottom_row * height)
-    }
+    return data.outputs[0].data.regions.map(face => {
+      const clarifaiFace = face.region_info.bounding_box;
+      return {
+        leftCol: clarifaiFace.left_col * width,
+        topRow: clarifaiFace.top_row * height,
+        rightCol: width - (clarifaiFace.right_col * width),
+        bottomRow: height - (clarifaiFace.bottom_row * height)
+      }
+    })
   }
 
-  displayFaceBox = (box) => {
-    this.setState({box: box})
+  displayFaceBoxes = (boxes) => {
+    this.setState({boxes: boxes})
   }
 
   onInputChange = (event) => {
@@ -79,7 +81,7 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.setState({imageURL: this.state.input})
-    fetch('https://rocky-ridge-78764.herokuapp.com/imageurl', {
+    fetch('http://localhost:3000/imageurl', {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -89,7 +91,7 @@ class App extends Component {
     .then(response => response.json())
     .then(response => {
       if (response) {
-        fetch('https://rocky-ridge-78764.herokuapp.com/image', {
+        fetch('http://localhost:3000/image', {
           method: 'put',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
@@ -102,7 +104,7 @@ class App extends Component {
         })
         .catch(console.log)
       }
-      this.displayFaceBox(this.calculateFaceLocation(response))
+      this.displayFaceBoxes(this.calculateFaceLocation(response))
     })
     .catch(err => console.log(err));
   }
@@ -117,7 +119,7 @@ class App extends Component {
   }
 
   render() {
-    const { isSignedIn, imageURL, route, box } = this.state;
+    const { isSignedIn, imageURL, route, boxes } = this.state;
     return (
       <div className="App">
       <Particles className='particles'
@@ -130,7 +132,7 @@ class App extends Component {
           <ImageLinkForm onInputChange={this.onInputChange} 
           onButtonSubmit={this.onButtonSubmit}
           />
-          <FaceRecognition box={box} imageURL={imageURL}/>
+          <FaceRecognition boxes={boxes} imageURL={imageURL}/>
           </div>
           : (
             route === 'signin'
