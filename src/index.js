@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+// CSS packages. FYI react bundles all CSS in one file. React prioritizes the later imports 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tachyons';
+import './index.css';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
