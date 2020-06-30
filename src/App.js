@@ -7,6 +7,8 @@ import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
 import Rank from './components/Rank/Rank';
 import Particles from 'react-particles-js';
+import Modal from './components/Modal/Modal';
+import Profile from './components/Profile/Profile'
 import './App.css';
 // import { render } from '@testing-library/react';
 
@@ -27,14 +29,17 @@ const initialState = {
   input: '',
   imageURL: '',
   boxes: [],
-  route: 'home', // keeps track where we are on the page
-  isSignedIn: true,
+  route: 'signin', // keeps track where we are on the page
+  isSignedIn: false,
+  isProfileOpen: false,
   user: {
     id: '',
     name: '',
     email: '',
     entries: 0,
-    joined: ''
+    joined: '',
+    pet: '',
+    age: ''
   }
 }
 
@@ -118,13 +123,31 @@ class App extends Component {
     this.setState({route: route});
   }
 
+  toggleModal = () => {
+    this.setState(prevState => ({
+      ...prevState,
+      isProfileOpen: !prevState.isProfileOpen
+    }))
+  }
+
   render() {
-    const { isSignedIn, imageURL, route, boxes } = this.state;
+    const { isSignedIn, imageURL, route, boxes, isProfileOpen, user } = this.state;
     return (
       <div className="App">
       <Particles className='particles'
         params={particlesOptions} />
-        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange}/>
+        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange}
+          toggleModal={this.toggleModal}
+        />
+        { isProfileOpen && 
+          <Modal>
+            <Profile 
+              isProfileOpen={isProfileOpen} 
+              toggleModal={this.toggleModal} 
+              user={user}  
+              />
+          </Modal>
+        }
         { route === 'home'
         ? <div>
           <Logo />

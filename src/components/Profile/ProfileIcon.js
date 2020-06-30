@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import './ProfileIcon.css';
 
 class ProfileIcon extends Component {
   constructor(props) {
@@ -28,10 +29,11 @@ class ProfileIcon extends Component {
                 className="br-100 h3 w3 dib" alt="avatar" />
             </DropdownToggle>
           <DropdownMenu 
+            className="b--transparent shadow-5"
+            id="dropdown-menu-extra" 
             right
-            className="b--transparent shadow-5" 
-            style={{marginTop: '20px', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
-            <DropdownItem>View Profile</DropdownItem>
+            >
+            <DropdownItem onClick={this.props.toggleModal}>View Profile</DropdownItem>
             <DropdownItem onClick={() => this.props.onRouteChange('signout')}>Sign Out</DropdownItem>
           </DropdownMenu>
         </Dropdown>
