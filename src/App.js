@@ -89,7 +89,9 @@ class App extends Component {
         name: data.name,
         email: data.email,
         entries: data.entries,
-        joined: data.joined
+        joined: data.joined,
+        pet: data.pet,
+        age: data.age
         }
     })
   }
@@ -160,6 +162,7 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if (route === 'signout') {
+      window.sessionStorage.removeItem('token')
       return this.setState(initialState)
     } else if (route === 'home') {
       this.setState({isSignedIn: true})
